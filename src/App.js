@@ -31,8 +31,11 @@ const App = () => {
     setFilter(e.target.value);
   };
  
-
-
+  const filteredName = persons.filter((person) =>
+  person.name.toLowerCase().includes(filter.toLowerCase())
+  )
+ 
+  
 
   const addPerson = (e) => {
     e.preventDefault();
@@ -102,7 +105,7 @@ const App = () => {
     }
 
     personService.create(personObj).then((person) => {
-      setPersons([...persons,person]);
+      setPersons(persons.concat(personObj));
       setNewName("")
       setNumber("")
       setNotification(`Added contact ${newName}`)
@@ -134,11 +137,8 @@ const App = () => {
     }
   };
 
-  const filteredName = persons.filter((person) =>
-  person.name.toLowerCase().includes(filter.toLowerCase())
-  )
-
-
+  
+ 
   return (
     <>
       <h2>Phonebook</h2>
@@ -158,5 +158,6 @@ const App = () => {
     </>
   );
 };
+
 
 export default App;

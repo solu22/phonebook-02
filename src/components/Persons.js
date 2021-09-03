@@ -1,6 +1,9 @@
 import React from 'react'
 
 const Persons = ({filteredName, onDelete}) => {
+  if(filteredName.length === 0){
+    return <p>Person not found</p>
+  }
     return (
         <div>
         {filteredName.map((person) => (
