@@ -12,8 +12,8 @@ const App = () => {
   const [newName, setNewName] = useState("")
   const [number, setNumber] = useState("")
   const [filter, setFilter] = useState("")
-  const [notification, setNotification] = useState(null)
-  const [msgType, setMsgType] = useState(null)
+  const [notification, setNotification] = useState()
+  const [msgType, setMsgType] = useState('')
 
   useEffect(() => {
     personService.getAll().then((data) => setPersons(data));
@@ -49,9 +49,10 @@ const App = () => {
     );
     if (existingPerson) {
       if(existingPerson.number === number && existingPerson.name.toLowerCase()=== newName.toLowerCase()){
-       return window.alert(
+       window.alert(
         `${newName} : ${number} is already added to phonebook`
       )
+      return
       }
 
       if(existingPerson.name.toLowerCase()=== newName.toLowerCase()){
@@ -59,7 +60,7 @@ const App = () => {
         {
          const updatedPerson = {...existingPerson, number:number}
          personService.update(updatedPerson).then(r=>{
-           setPersons(persons.map(p => p.id!== updatedPerson.id ? p : r))
+           setPersons(persons.map(p => p.id !== updatedPerson.id ? p : r))
          })
          .then(()=>{
            setNewName('')
@@ -81,23 +82,25 @@ const App = () => {
         {
          const updatedPerson = {...existingPerson, name: newName}
          personService.update(updatedPerson).then(r=>{
-           setPersons(persons.map(p => p.id!== updatedPerson.id ? p : r))
+           setPersons(persons.map(p => p.id !== updatedPerson.id ? p : r))
          })
          .then(()=>{
            setNewName('')
            setNumber('')
-           setNotification(`Updated contact name for ${number} with ${newName}`
-            )
-             setMsgType('success')
+           setNotification(`Updated contact name for ${number} with ${newName}`)
+           setMsgType('success')
+            })
+            
              setTimeout(() => {
                setNotification(null)
              }, 2000)
-         })
+         }
+         return
         }
-        return
+        
       }
       
-    }
+    
    else{
     const personObj = {
       name: newName,
@@ -110,6 +113,12 @@ const App = () => {
       setNumber("")
       setNotification(`Added contact ${newName}`)
       setMsgType('success')
+      setTimeout(() => {
+        setNotification(null)
+      }, 2000);
+    }).catch(error=>{
+      setNotification("length is shorter for fields", error.response.data)
+      setMsgType('error')
       setTimeout(() => {
         setNotification(null)
       }, 2000);
